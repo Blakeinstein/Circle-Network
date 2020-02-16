@@ -1,22 +1,23 @@
 #!/usr/bin/env python
+from fbs_runtime.application_context.PyQt5 import ApplicationContext
 import random
-from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QVBoxLayout, QPushButton
+import sys
+from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QVBoxLayout, QPushButton, QStyleFactory, QDialog
 class circle():
     def __init__(self, radius=random.random()*100):
         self.radius = radius
-class gui():
-    def __init__(self):
-        self.app = QApplication([])
-        self.window = QWidget()
+class gui(QDialog):
+    def __init__(self, parent=None):
+        super(gui, self).__init__(parent)
+        QApplication.setStyle(QStyleFactory.create('Fusion'))
+        QApplication.setPalette(QApplication.style().standardPalette())
         self.layout = QVBoxLayout()
-        
-    def exec(self):
         self.layout.addWidget(QPushButton('Top'))
         self.layout.addWidget(QPushButton('Bottom'))
-        self.window.setLayout(self.layout)
-        self.window.show()
-        return self.app.exec_()
-        
+        self.setLayout(self.layout)
+
 if __name__ == "__main__":
+    appctxt = ApplicationContext()
     test = gui()
-    test.exec()
+    test.show()
+    sys.exit(appctxt.app.exec_())
