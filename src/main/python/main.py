@@ -4,8 +4,10 @@ import random
 import sys
 from PyQt5.QtWidgets import QApplication, QLabel, QWidget, QVBoxLayout, QPushButton, QStyleFactory, QDialog
 class circle():
-    def __init__(self, radius=random.random()*100):
+    def __init__(self, radius=random.random()*100, name=None):
         self.radius = radius
+        self.label = name
+        
 class gui(QDialog):
     def __init__(self, parent=None):
         super(gui, self).__init__(parent)
