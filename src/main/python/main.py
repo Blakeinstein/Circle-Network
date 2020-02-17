@@ -30,25 +30,29 @@ class gui(QDialog):
             QApplication.setPalette(QApplication.style().standardPalette())
         self.setWindowTitle('Circle Networks')
         self.painter = QGraphicsScene(10, 10, 900, 600)
-        self.canvas = QGraphicsView(self.painter)
-        self.setupCanvas()
         self.createTopLayout()
+        self.canvas = QGraphicsView(self.painter)
         mainLayout = QGridLayout()
         mainLayout.addLayout(self.topLayout, 0, 0, 1, 2)
         mainLayout.addWidget(self.canvas, 1, 0, 6, 2)
         self.setLayout(mainLayout)
         self.circleList = []
 
-    def setupCanvas(self):
-        pass
+    def changeCanvasBG(self, style):
+        if style == 'white background':
+            self.painter.setBackgroundBrush(QBrush(Qt.white))
+        else:
+            self.painter.setBackgroundBrush(QBrush())
+        self.canvas = QGraphicsView(self.painter)
 
     def createTopLayout(self):
         self.topLayout = QHBoxLayout()
         button1 = QPushButton("Add", clicked = self.addCircle)
-        button2 = QPushButton("Pdf")
-        button3 = QPushButton("Png", clicked = self.renderPng)
+        button2 = QPushButton("Generate Report")
+        button3 = QPushButton("Save", clicked = self.renderPng)
         styleComboBox = QComboBox()
-        styleComboBox.addItems(QStyleFactory.keys())
+        styleComboBox.addItems(['transparent background', 'white background'])
+        styleComboBox.activated[str].connect(self.changeCanvasBG)
         styleLabel = QLabel("&Style:")
         styleLabel.setBuddy(styleComboBox)
         self.topLayout.addWidget(styleLabel)
@@ -62,7 +66,6 @@ class gui(QDialog):
         pen = QPen(Qt.black, 2, Qt.SolidLine)
         self.painter.clear()
         for cir in self.circleList:
-            print (cir)
             self.painter.addEllipse(cir.x, cir.y, cir.radius, cir.radius, pen=QPen(Qt.black, 2, Qt.SolidLine))
         self.painter.update()
         self.canvas.update()
