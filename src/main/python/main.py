@@ -9,12 +9,12 @@ from PyQt5.QtGui import QPainter, QPalette, QColor, QBrush, QPen, QPixmap, QImag
 from PyQt5.QtCore import Qt
 
 class circle():
-    def __init__(self, radius=random.random()*100, name=None, x=random.random()*100, y=random.random()*100):
-        self.radius = radius
-        self.label = name
-        self.center = complex(x,y)
-        self.x = x
-        self.y = y
+    def __init__(self, radius=None, name=None, x=None, y=None):
+        self.radius = radius if radius else random.random()*500
+        self.label = name if name else "cirA"
+        self.x = x if x else random.randint(0, 900)
+        self.y = y if y else random.randint(0, 600)
+        # self.center = complex(self.x, self.y)
         
     def __str__(self):
         return f'Circle called {self.label} centered at {self.x}, {self.y}'
@@ -31,16 +31,20 @@ class gui(QDialog):
         self.setWindowTitle('Circle Networks')
         self.painter = QGraphicsScene(10, 10, 900, 600)
         self.canvas = QGraphicsView(self.painter)
+        self.setupCanvas()
         self.createTopLayout()
         mainLayout = QGridLayout()
         mainLayout.addLayout(self.topLayout, 0, 0, 1, 2)
         mainLayout.addWidget(self.canvas, 1, 0, 6, 2)
         self.setLayout(mainLayout)
         self.circleList = []
-    
+
+    def setupCanvas(self):
+        pass
+
     def createTopLayout(self):
         self.topLayout = QHBoxLayout()
-        button1 = QPushButton("Add", clicked = self.newCircle)
+        button1 = QPushButton("Add", clicked = self.addCircle)
         button2 = QPushButton("Pdf")
         button3 = QPushButton("Png", clicked = self.renderPng)
         styleComboBox = QComboBox()
@@ -54,15 +58,22 @@ class gui(QDialog):
         self.topLayout.addWidget(button2)
         self.topLayout.addWidget(button3)
     
-    def draw_circle(self, cir):
+    def drawCircle(self):
         pen = QPen(Qt.black, 2, Qt.SolidLine)
-        self.circleList.append(cir)
-        self.painter.addEllipse(cir.x, cir.y, cir.radius, cir.radius, pen=QPen(Qt.black, 2, Qt.SolidLine))
+        self.painter.clear()
+        for cir in self.circleList:
+            print (cir)
+            self.painter.addEllipse(cir.x, cir.y, cir.radius, cir.radius, pen=QPen(Qt.black, 2, Qt.SolidLine))
+        self.painter.update()
+        self.canvas.update()
         self.update()
     
-    def newCircle(self):
-        cir=circle()
-        self.draw_circle(cir)
+    def newCircle(self, cir):
+        self.circleList.append(cir)
+        self.drawCircle()
+    
+    def addCircle(self):
+        return self.newCircle(circle())
     
     def renderPng(self):
         printed = QImage(300, 200, QImage.Format_ARGB32)
@@ -94,6 +105,6 @@ if __name__ == "__main__":
     test.show()
     cir1 = circle(name='cirA')
     cir2 = circle(name='cirB')
-    test.draw_circle(cir = cir1)
-    test.draw_circle(cir = cir2)
+    test.newCircle(cir = cir1)
+    test.newCircle(cir = cir2)
     exit(app.app.exec_())
