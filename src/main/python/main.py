@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QDialog, QLabel,
                              QPushButton, QGridLayout, QStyleFactory, QHBoxLayout,
                              QWidget, QComboBox, QGraphicsScene, QGraphicsView, QGraphicsItem)
 from PyQt5.QtGui import QPainter, QPalette, QColor, QBrush, QPen, QPixmap, QImage
-from PyQt5.QtCore import Qt, QRectF
+from PyQt5.QtCore import Qt, QRectF, QPointF, pyqtSlot
 
 class Circle(QGraphicsItem):
     def __init__(self, radius=None, name="", x=0, y=0, parent=None):
@@ -21,6 +21,16 @@ class Circle(QGraphicsItem):
         self.setAcceptHoverEvents(True)
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
+        self.resizer = Resizer(parent=self)
+
+    def handleAt(self, point):
+            """
+            Returns the resize handle below the given point.
+            """
+            for k, v, in self.handles.items():
+                if v.contains(point):
+                    return k
+            return None
 
     def hoverMoveEvent(self, moveEvent):
         """
@@ -170,9 +180,14 @@ class Circle(QGraphicsItem):
             rect.setRight(boundingRect.right() - offset)
             rect.setBottom(boundingRect.bottom() - offset)
             self.setRect(rect)
-
         self.updateHandlesPos()
-        
+    
+    @pyqtSlot()
+    def resize(self, change):
+        self.setRect(self.rect().adjusted(0, 0, change.x(), change.y()))
+        self.prepareGeometryChange()
+        self.update()
+    
     def boundingRect(self):
         return QRectF(0, 0, self.radius, self.radius)
 
