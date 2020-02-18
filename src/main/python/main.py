@@ -72,10 +72,7 @@ class Circle(QGraphicsItem):
         painter.setPen(QPen(Qt.black, 2, Qt.SolidLine))
         painter.drawEllipse(0, 0, self.radius, self.radius)
         painter.drawText(0, 0, self.radius, self.radius, Qt.AlignCenter, self.label)
-        
-    def __str__(self):
-        return f'Circle called {self.label} centered at {self.x}, {self.y}'
-    
+     
 class gui(QDialog):
     def __init__(self, parent=None):
         super(gui, self).__init__(parent)
