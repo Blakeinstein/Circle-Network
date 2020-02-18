@@ -59,98 +59,6 @@ class Circle(QGraphicsItem):
         self.mousePressRect = None
         self.update()
     
-    def interactiveResize(self, mousePos):
-        offset = self.handleSize + self.handleSpace
-        boundingRect = self.boundingRect()
-        rect = self.rect()
-        diff = QPointF(0, 0)
-        self.prepareGeometryChange()
-        if self.handleSelected == self.handleTopLeft:
-            fromX = self.mousePressRect.left()
-            fromY = self.mousePressRect.top()
-            toX = fromX + mousePos.x() - self.mousePressPos.x()
-            toY = fromY + mousePos.y() - self.mousePressPos.y()
-            diff.setX(toX - fromX)
-            diff.setY(toY - fromY)
-            boundingRect.setLeft(toX)
-            boundingRect.setTop(toY)
-            rect.setLeft(boundingRect.left() + offset)
-            rect.setTop(boundingRect.top() + offset)
-            self.setRect(rect)
-
-        elif self.handleSelected == self.handleTopMiddle:
-            fromY = self.mousePressRect.top()
-            toY = fromY + mousePos.y() - self.mousePressPos.y()
-            diff.setY(toY - fromY)
-            boundingRect.setTop(toY)
-            rect.setTop(boundingRect.top() + offset)
-            self.setRect(rect)
-
-        elif self.handleSelected == self.handleTopRight:
-            fromX = self.mousePressRect.right()
-            fromY = self.mousePressRect.top()
-            toX = fromX + mousePos.x() - self.mousePressPos.x()
-            toY = fromY + mousePos.y() - self.mousePressPos.y()
-            diff.setX(toX - fromX)
-            diff.setY(toY - fromY)
-            boundingRect.setRight(toX)
-            boundingRect.setTop(toY)
-            rect.setRight(boundingRect.right() - offset)
-            rect.setTop(boundingRect.top() + offset)
-            self.setRect(rect)
-
-        elif self.handleSelected == self.handleMiddleLeft:
-            fromX = self.mousePressRect.left()
-            toX = fromX + mousePos.x() - self.mousePressPos.x()
-            diff.setX(toX - fromX)
-            boundingRect.setLeft(toX)
-            rect.setLeft(boundingRect.left() + offset)
-            self.setRect(rect)
-
-        elif self.handleSelected == self.handleMiddleRight:
-            print("MR")
-            fromX = self.mousePressRect.right()
-            toX = fromX + mousePos.x() - self.mousePressPos.x()
-            diff.setX(toX - fromX)
-            boundingRect.setRight(toX)
-            rect.setRight(boundingRect.right() - offset)
-            self.setRect(rect)
-
-        elif self.handleSelected == self.handleBottomLeft:
-            fromX = self.mousePressRect.left()
-            fromY = self.mousePressRect.bottom()
-            toX = fromX + mousePos.x() - self.mousePressPos.x()
-            toY = fromY + mousePos.y() - self.mousePressPos.y()
-            diff.setX(toX - fromX)
-            diff.setY(toY - fromY)
-            boundingRect.setLeft(toX)
-            boundingRect.setBottom(toY)
-            rect.setLeft(boundingRect.left() + offset)
-            rect.setBottom(boundingRect.bottom() - offset)
-            self.setRect(rect)
-
-        elif self.handleSelected == self.handleBottomMiddle:
-            fromY = self.mousePressRect.bottom()
-            toY = fromY + mousePos.y() - self.mousePressPos.y()
-            diff.setY(toY - fromY)
-            boundingRect.setBottom(toY)
-            rect.setBottom(boundingRect.bottom() - offset)
-            self.setRect(rect)
-
-        elif self.handleSelected == self.handleBottomRight:
-            fromX = self.mousePressRect.right()
-            fromY = self.mousePressRect.bottom()
-            toX = fromX + mousePos.x() - self.mousePressPos.x()
-            toY = fromY + mousePos.y() - self.mousePressPos.y()
-            diff.setX(toX - fromX)
-            diff.setY(toY - fromY)
-            boundingRect.setRight(toX)
-            boundingRect.setBottom(toY)
-            rect.setRight(boundingRect.right() - offset)
-            rect.setBottom(boundingRect.bottom() - offset)
-            self.setRect(rect)
-        self.updateHandlesPos()
-    
     @pyqtSlot()
     def resize(self, change):
         self.setRect(self.rect().adjusted(0, 0, change.x(), change.y()))
@@ -199,6 +107,7 @@ class gui(QDialog):
         button1 = QPushButton("Add", clicked = self.addCircle)
         button2 = QPushButton("Generate Report")
         button3 = QPushButton("Save", clicked = self.renderPng)
+        button4 = QPushButton("Clear", clicked = self.clearCanvas)
         styleComboBox = QComboBox()
         styleComboBox.addItems(['white background', 'transparent background'])
         styleComboBox.activated[str].connect(self.changeCanvasBG)
@@ -208,6 +117,7 @@ class gui(QDialog):
         self.topLayout.addWidget(styleComboBox)
         self.topLayout.addStretch(1)
         self.topLayout.addWidget(button1)
+        self.topLayout.addWidget(button4)
         self.topLayout.addWidget(button2)
         self.topLayout.addWidget(button3)
         
@@ -221,6 +131,9 @@ class gui(QDialog):
 
     def addCircle(self):
         return self.newCircle(Circle())
+    
+    def clearCanvas(self):
+        return self.painter.clear()
     
     def renderPng(self):
         printed = QImage(300, 200, QImage.Format_ARGB32)
