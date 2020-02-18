@@ -1,19 +1,20 @@
 #!/usr/bin/env python
 import random
+from string import ascii_uppercase
 from sys import exit, platform
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QDialog, QLabel,
                              QPushButton, QGridLayout, QStyleFactory, QHBoxLayout,
                              QWidget, QComboBox, QGraphicsScene, QGraphicsView, QGraphicsItem)
 from PyQt5.QtGui import QPainter, QPalette, QColor, QBrush, QPen, QImage
-from PyQt5.QtCore import Qt, QRectF, QPointF, pyqtSlot
+from PyQt5.QtCore import Qt, QRectF, QPointF
 
 class Circle(QGraphicsItem):
     def __init__(self, radius=None, name="", x=0, y=0, parent=None):
         super(Circle, self).__init__(parent)
-        self.radius = radius or random.random() * 500
-        self.label = name if name else "cirA"
-        self.setPos(x or random.randint(0, 900), y or random.randint(0, 900))
+        self.radius = radius or 50 + random.random() * 300
+        self.label = name if name else f'cir{random.choice(ascii_uppercase)}'
+        self.setPos(x or random.randint(0, 300), y or random.randint(0, 450))
         self.handles = {}
         self.handleSelected = None
         self.mousePressPos = None
@@ -57,12 +58,6 @@ class Circle(QGraphicsItem):
         self.handleSelected = None
         self.mousePressPos = None
         self.mousePressRect = None
-        self.update()
-    
-    @pyqtSlot()
-    def resize(self, change):
-        self.setRect(self.rect().adjusted(0, 0, change.x(), change.y()))
-        self.prepareGeometryChange()
         self.update()
     
     def boundingRect(self):
