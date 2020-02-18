@@ -163,8 +163,4 @@ if __name__ == "__main__":
     app = ApplicationContext()
     test = gui()
     test.show()
-    # cir1 = circle(name='cirA')
-    # cir2 = circle(name='cirB')
-    # test.newCircle(cir = cir1)
-    # test.newCircle(cir = cir2)
     exit(app.app.exec_())
