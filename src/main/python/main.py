@@ -5,7 +5,7 @@ from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QDialog, QLabel,
                              QPushButton, QGridLayout, QStyleFactory, QHBoxLayout,
                              QWidget, QComboBox, QGraphicsScene, QGraphicsView, QGraphicsItem)
-from PyQt5.QtGui import QPainter, QPalette, QColor, QBrush, QPen, QPixmap, QImage
+from PyQt5.QtGui import QPainter, QPalette, QColor, QBrush, QPen, QImage
 from PyQt5.QtCore import Qt, QRectF, QPointF, pyqtSlot
 
 class Circle(QGraphicsItem):
