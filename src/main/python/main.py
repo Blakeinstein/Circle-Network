@@ -71,7 +71,8 @@ class gui(QDialog):
         return self.painter.clear()
     
     def generateReport(self):
-        pass
+        for i in self.circleList:
+            print(i.m_items[4].toPlainText())
     
     def renderPng(self):
         printed = QImage(300, 200, QImage.Format_ARGB32)
@@ -103,7 +104,9 @@ class gui(QDialog):
                 i.setEnabled(False)
                 for j in i.m_items:
                     self.painter.removeItem(j)
+                    del j
                 self.painter.removeItem(i)
+                del i
 
 if __name__ == "__main__":
     app = ApplicationContext()

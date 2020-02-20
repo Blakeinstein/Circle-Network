@@ -84,6 +84,7 @@ class circleName(QGraphicsTextItem):
         self.setDefaultTextColor(Qt.black)
         self.setTextInteractionFlags(Qt.TextEditorInteraction)
         self.adjustSize()
+        self.setTextWidth(-1)
     
     def hoverEnterEvent(self, event):
         self.setCursor(QCursor(Qt.IBeamCursor))
@@ -93,23 +94,19 @@ class circleName(QGraphicsTextItem):
         self.setCursor(QCursor(Qt.ArrowCursor))
         super(circleName, self).hoverLeaveEvent(event)
         
+        
 class Circle(QGraphicsEllipseItem):
     
     def __init__(self, radius=None, name=None, x=0, y=0, parent=None):
         super(Circle, self).__init__(parent)
         self.setZValue(11)
         self.m_items = []
-
         self.setPen(QPen(Qt.black, 2, Qt.SolidLine))
-
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
-
         self.setAcceptHoverEvents(True)
-
         self.setCursor(QCursor(Qt.PointingHandCursor))
-
         self._radius = radius or 50 + random.random() * 300
         self.label = name if name else f'cir{random.choice(ascii_uppercase)}'
         self.setPos(x or random.randint(0, 300), y or random.randint(0, 450))
