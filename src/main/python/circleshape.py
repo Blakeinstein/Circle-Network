@@ -2,9 +2,9 @@ import random
 from string import ascii_uppercase
 
 from PyQt5.QtCore import QPointF, QRectF, Qt
-from PyQt5.QtGui import QColor, QCursor, QPainterPath, QPen, QBrush
+from PyQt5.QtGui import QColor, QCursor, QPainterPath, QPainter, QPen, QBrush
 
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsPathItem, QGraphicsEllipseItem
+from PyQt5.QtWidgets import QGraphicsItem, QGraphicsPathItem, QGraphicsEllipseItem, QGraphicsTextItem
 
 
 class GripItem(QGraphicsPathItem):
@@ -52,6 +52,17 @@ class DirectionGripItem(GripItem):
     @property
     def direction(self):
         return self._direction
+    
+    def hoverEnterEvent(self, event):
+        if self._direction == Qt.Horizontal:
+            self.setCursor(QCursor(Qt.SizeHorCursor))
+        else:
+            self.setCursor(QCursor(Qt.SizeVerCursor))
+        super(DirectionGripItem, self).hoverEnterEvent(event)
+
+    def hoverLeaveEvent(self, event):
+        self.setCursor(QCursor(Qt.ArrowCursor))
+        super(DirectionGripItem, self).hoverLeaveEvent(event)
 
     def itemChange(self, change, value):
         if change == QGraphicsItem.ItemPositionChange and self.isEnabled():
@@ -64,6 +75,32 @@ class DirectionGripItem(GripItem):
             return p
         return super(DirectionGripItem, self).itemChange(change, value)
 
+      
+class circleName(QGraphicsItem):
+    def __init__(self, label, index, parent=None):
+        super(circleName, self).__init__(parent)
+        self.label = label
+        self.m_index = index
+        self.setZValue(11)
+        self.setFlag(QGraphicsItem.ItemIsSelectable, True)
+        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
+        self.setAcceptHoverEvents(True)
+    
+    def hoverEnterEvent(self, event):
+        self.setCursor(QCursor(Qt.IBeamCursor))
+        super(circleName, self).hoverEnterEvent(event)
+
+    def hoverLeaveEvent(self, event):
+        self.setCursor(QCursor(Qt.ArrowCursor))
+        super(circleName, self).hoverLeaveEvent(event)
+        
+    def boundingRect(self):
+        return QRectF(-50, -50, 100, 100)
+
+    def paint(self, painter, option, widget):
+        painter.setPen(QPen(Qt.black, 10, Qt.SolidLine))
+        painter.drawText(self.boundingRect(), Qt.AlignCenter, self.label)
+        
 class Circle(QGraphicsEllipseItem):
     
     def __init__(self, radius=None, name=None, x=0, y=0, parent=None):
@@ -99,8 +136,9 @@ class Circle(QGraphicsEllipseItem):
         self._radius = r
         self.update_rect()
         self.add_grip_items()
+        self.addNameItem()
         self.update_items_positions()
-
+  
     def update_rect(self):
         rect = QRectF(0, 0, 2 * self.radius, 2 * self.radius)
         rect.moveCenter(self.rect().center())
@@ -114,14 +152,19 @@ class Circle(QGraphicsEllipseItem):
                     Qt.Horizontal,
                     Qt.Vertical,
                     Qt.Horizontal,
+                    Qt.AlignHCenter
                 )
             ):
-                item = DirectionGripItem(self, direction, i)
+                if i == 4:
+                    item = circleName(self.label, i)
+                else:
+                    item = DirectionGripItem(self, direction, i)
                 self.scene().addItem(item)
                 self.m_items.append(item)
 
+        
     def movePoint(self, i, p):
-        if 0 <= i < min(4, len(self.m_items)):
+        if 0 <= i < min(5, len(self.m_items)):
             item_selected = self.m_items[i]
             lp = self.mapFromScene(p)
             self._radius = (lp - self.rect().center()).manhattanLength()
@@ -131,6 +174,7 @@ class Circle(QGraphicsEllipseItem):
                 self.m_items.insert(k, item_selected)
                 self.update_items_positions([k])
                 self.update_rect()
+        
 
     def update_items_positions(self, index_no_updates=None):
         index_no_updates = index_no_updates or []
@@ -142,18 +186,22 @@ class Circle(QGraphicsEllipseItem):
                     Qt.Horizontal,
                     Qt.Vertical,
                     Qt.Horizontal,
+                    Qt.AlignCenter,
                 ),
             ),
         ):
             item.m_index = i
             if i not in index_no_updates:
-                pos = self.mapToScene(self.point(i))
                 item = self.m_items[i]
-                item._direction = direction
+                if i != 4:
+                    pos = self.mapToScene(self.point(i))
+                else: 
+                    pos = self.pos()
+                    item._direction = direction
                 item.setEnabled(False)
                 item.setPos(pos)
                 item.setEnabled(True)
-
+        
     def indexOf(self, p):
         for i in range(4):
             if p == self.point(i):
