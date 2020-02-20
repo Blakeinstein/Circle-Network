@@ -40,7 +40,7 @@ class gui(QDialog):
     def createTopLayout(self):
         self.topLayout = QHBoxLayout()
         button1 = QPushButton("Add", clicked = self.addCircle)
-        button2 = QPushButton("Generate Report")
+        button2 = QPushButton("Generate Report", clicked = self.generateReport)
         button3 = QPushButton("Save", clicked = self.renderPng)
         button4 = QPushButton("Clear", clicked = self.clearCanvas)
         styleComboBox = QComboBox()
@@ -70,6 +70,9 @@ class gui(QDialog):
     def clearCanvas(self):
         return self.painter.clear()
     
+    def generateReport(self):
+        pass
+    
     def renderPng(self):
         printed = QImage(300, 200, QImage.Format_ARGB32)
         printer = QPainter(printed)
@@ -93,6 +96,14 @@ class gui(QDialog):
         dark_palette.setColor(QPalette.Highlight, QColor(42, 130, 218))
         dark_palette.setColor(QPalette.HighlightedText, Qt.black)
         QApplication.setPalette(dark_palette)
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Delete or event.key() == Qt.Key_Backspace:
+            for i in self.painter.selectedItems():
+                i.setEnabled(False)
+                for j in i.m_items:
+                    self.painter.removeItem(j)
+                self.painter.removeItem(i)
 
 if __name__ == "__main__":
     app = ApplicationContext()
