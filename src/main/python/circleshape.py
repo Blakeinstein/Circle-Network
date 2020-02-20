@@ -2,7 +2,7 @@ import random
 from string import ascii_uppercase
 
 from PyQt5.QtCore import QPointF, QRectF, Qt
-from PyQt5.QtGui import QColor, QCursor, QPainterPath, QPainter, QPen, QBrush
+from PyQt5.QtGui import QColor, QCursor, QTextCursor, QPainterPath, QPainter, QPen, QBrush
 
 from PyQt5.QtWidgets import QGraphicsItem, QGraphicsPathItem, QGraphicsEllipseItem, QGraphicsTextItem
 
@@ -76,15 +76,14 @@ class DirectionGripItem(GripItem):
         return super(DirectionGripItem, self).itemChange(change, value)
 
       
-class circleName(QGraphicsItem):
+class circleName(QGraphicsTextItem):
     def __init__(self, label, index, parent=None):
-        super(circleName, self).__init__(parent)
-        self.label = label
+        super(circleName, self).__init__(label, parent)
         self.m_index = index
         self.setZValue(11)
-        self.setFlag(QGraphicsItem.ItemIsSelectable, True)
-        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
-        self.setAcceptHoverEvents(True)
+        self.setDefaultTextColor(Qt.black)
+        self.setTextInteractionFlags(Qt.TextEditorInteraction)
+        self.adjustSize()
     
     def hoverEnterEvent(self, event):
         self.setCursor(QCursor(Qt.IBeamCursor))
@@ -93,13 +92,6 @@ class circleName(QGraphicsItem):
     def hoverLeaveEvent(self, event):
         self.setCursor(QCursor(Qt.ArrowCursor))
         super(circleName, self).hoverLeaveEvent(event)
-        
-    def boundingRect(self):
-        return QRectF(-50, -50, 100, 100)
-
-    def paint(self, painter, option, widget):
-        painter.setPen(QPen(Qt.black, 10, Qt.SolidLine))
-        painter.drawText(self.boundingRect(), Qt.AlignCenter, self.label)
         
 class Circle(QGraphicsEllipseItem):
     
@@ -196,7 +188,7 @@ class Circle(QGraphicsEllipseItem):
                 if i != 4:
                     pos = self.mapToScene(self.point(i))
                 else: 
-                    pos = self.pos()
+                    pos = self.pos() - QPointF(15, 13.5)
                     item._direction = direction
                 item.setEnabled(False)
                 item.setPos(pos)
