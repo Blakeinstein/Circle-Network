@@ -24,6 +24,7 @@ class gui(QDialog):
         self.painter = QGraphicsScene(10, 10, 900, 600)
         self.painter.setBackgroundBrush(QBrush(Qt.white))
         self.createTopLayout()
+        self.sortedItems = []
         self.canvas = QGraphicsView(self.painter)
         mainLayout = QGridLayout()
         mainLayout.addLayout(self.topLayout, 0, 0, 1, 2)
@@ -105,9 +106,19 @@ class gui(QDialog):
                 for j in i.m_items:
                     self.painter.removeItem(j)
                     del j
+                for line, ref in i.lineItems:
+                    self.painter.removeItem(line)
+                    i.lineItems.remove([line, ref])
+                    ref.lineItems.remove([line, i])
+                    del line
                 self.painter.removeItem(i)
                 del i
-
+        elif event.key() == Qt.Key_Space:
+            temp = self.painter.selectedItems()
+            for i in range(0, len(temp) - 1):
+                # self.painter.addLine(temp[i].pos().x(), temp[i].pos().y(), temp[i+1].pos().x(), temp[i+1].pos().y())
+                temp[i].addLine(temp[i+1])
+                
 if __name__ == "__main__":
     app = ApplicationContext()
     test = gui()

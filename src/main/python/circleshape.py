@@ -4,7 +4,7 @@ from string import ascii_uppercase
 from PyQt5.QtCore import QPointF, QRectF, Qt
 from PyQt5.QtGui import QColor, QCursor, QTextCursor, QPainterPath, QPainter, QPen, QBrush
 
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsPathItem, QGraphicsEllipseItem, QGraphicsTextItem
+from PyQt5.QtWidgets import QGraphicsItem, QGraphicsPathItem, QGraphicsEllipseItem, QGraphicsTextItem, QGraphicsLineItem
 
 
 class GripItem(QGraphicsPathItem):
@@ -93,7 +93,10 @@ class circleName(QGraphicsTextItem):
     def hoverLeaveEvent(self, event):
         self.setCursor(QCursor(Qt.ArrowCursor))
         super(circleName, self).hoverLeaveEvent(event)
-        
+
+# class Line(QGraphicsLineItem):
+#     def __init__(self, cir1, cir2, parent=None):
+#         super().__init__(cir1.pos().x(), cir1.pos().y(), cir2.pos().x(), cir2.pos().y(), parent=parent)       
         
 class Circle(QGraphicsEllipseItem):
     
@@ -101,7 +104,8 @@ class Circle(QGraphicsEllipseItem):
         super(Circle, self).__init__(parent)
         self.setZValue(11)
         self.m_items = []
-        self.setPen(QPen(Qt.black, 2, Qt.SolidLine))
+        self.lineItems = []
+        self.setPen(QPen(Qt.black, 6, Qt.SolidLine))
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
@@ -190,7 +194,11 @@ class Circle(QGraphicsEllipseItem):
                 item.setEnabled(False)
                 item.setPos(pos)
                 item.setEnabled(True)
-        
+        for line,ref  in self.lineItems:
+            line.setEnabled(False)
+            line.setLine(self.pos().x(), self.pos().y(), ref.pos().x(), ref.pos().y())
+            line.setEnabled(True)
+            
     def indexOf(self, p):
         for i in range(4):
             if p == self.point(i):
@@ -222,3 +230,10 @@ class Circle(QGraphicsEllipseItem):
     def hoverLeaveEvent(self, event):
         self.setBrush(QBrush(Qt.NoBrush))
         super(Circle, self).hoverLeaveEvent(event)
+        
+    def addLine(self, cir2):
+        line = QGraphicsLineItem(self.pos().x(), self.pos().y(), cir2.pos().x(), cir2.pos().y())
+        line.setPen(QPen(Qt.black, 2, Qt.SolidLine))
+        self.scene().addItem(line)
+        self.lineItems.append([line, cir2])
+        cir2.lineItems.append([line, self])
