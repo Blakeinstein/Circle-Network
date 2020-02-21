@@ -74,6 +74,7 @@ class gui(QDialog):
     def generateReport(self):
         for i in self.circleList:
             print(i.m_items[4].toPlainText())
+            print(i.lineItems)
     
     def renderPng(self):
         printed = QImage(300, 200, QImage.Format_ARGB32)

@@ -76,9 +76,9 @@ class DirectionGripItem(GripItem):
         return super(DirectionGripItem, self).itemChange(change, value)
 
       
-class circleName(QGraphicsTextItem):
+class itemName(QGraphicsTextItem):
     def __init__(self, label, index, parent=None):
-        super(circleName, self).__init__(label, parent)
+        super(itemName, self).__init__(label, parent)
         self.m_index = index
         self.setZValue(11)
         self.setDefaultTextColor(Qt.black)
@@ -88,15 +88,42 @@ class circleName(QGraphicsTextItem):
     
     def hoverEnterEvent(self, event):
         self.setCursor(QCursor(Qt.IBeamCursor))
-        super(circleName, self).hoverEnterEvent(event)
+        super(itemName, self).hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):
         self.setCursor(QCursor(Qt.ArrowCursor))
-        super(circleName, self).hoverLeaveEvent(event)
+        super(itemName, self).hoverLeaveEvent(event)
+    
+class conLine(QGraphicsLineItem):
+    def __init__(self, cir1, cir2, parent=None):
+        super(conLine, self).__init__(cir1.pos().x(), cir1.pos().y(), cir2.pos().x(), cir2.pos().y(), parent=parent)
+        self.setZValue(11)
+        self.label = f'con{random.choice(ascii_uppercase)}'
+        self.setFlag(QGraphicsItem.ItemIsMovable, True)
+        self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
+        self.setPen(QPen(Qt.black, 1, Qt.SolidLine))
+        self.nameItem = None
+     
+    def setLine(self, x1, y1, x2, y2):
+        super(conLine, self).setLine(x1, y1, x2, y2)
+        self.updateAlignment()
+    
+    def addNameItem(self):
+        if self.scene() and not self.nameItem:
+            nameItem = itemName(self.label, 1)
+            self.scene().addItem(nameItem)
+            self.nameItem = nameItem
+            
+        self.updateAlignment()
 
-# class Line(QGraphicsLineItem):
-#     def __init__(self, cir1, cir2, parent=None):
-#         super().__init__(cir1.pos().x(), cir1.pos().y(), cir2.pos().x(), cir2.pos().y(), parent=parent)       
+    def updateAlignment(self):
+        nameItem = self.nameItem
+        line = self.line()
+        angle = line.angle()
+        nameItem.setEnabled(False)
+        nameItem.setPos(line.center())
+        nameItem.setRotation(180-angle if 90<angle<=270 else -angle)
+        nameItem.setEnabled(True)
         
 class Circle(QGraphicsEllipseItem):
     
@@ -105,7 +132,7 @@ class Circle(QGraphicsEllipseItem):
         self.setZValue(11)
         self.m_items = []
         self.lineItems = []
-        self.setPen(QPen(Qt.black, 6, Qt.SolidLine))
+        self.setPen(QPen(Qt.black, 3, Qt.SolidLine))
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
@@ -115,7 +142,7 @@ class Circle(QGraphicsEllipseItem):
         self.label = name if name else f'cir{random.choice(ascii_uppercase)}'
         self.setPos(x or random.randint(0, 300), y or random.randint(0, 450))
         self.update_rect()
-        self.add_grip_items()
+        self.addItems()
         self.update_items_positions()
 
     @property
@@ -128,7 +155,7 @@ class Circle(QGraphicsEllipseItem):
             raise ValueError("radius must be positive")
         self._radius = r
         self.update_rect()
-        self.add_grip_items()
+        self.addItems()
         self.addNameItem()
         self.update_items_positions()
   
@@ -137,7 +164,7 @@ class Circle(QGraphicsEllipseItem):
         rect.moveCenter(self.rect().center())
         self.setRect(rect)
 
-    def add_grip_items(self):
+    def addItems(self):
         if self.scene() and not self.m_items:
             for i, (direction) in enumerate(
                 (
@@ -149,7 +176,7 @@ class Circle(QGraphicsEllipseItem):
                 )
             ):
                 if i == 4:
-                    item = circleName(self.label, i)
+                    item = itemName(self.label, i)
                 else:
                     item = DirectionGripItem(self, direction, i)
                 self.scene().addItem(item)
@@ -190,7 +217,7 @@ class Circle(QGraphicsEllipseItem):
                     pos = self.mapToScene(self.point(i))
                 else: 
                     pos = self.pos() - QPointF(15, 13.5)
-                    item._direction = direction
+                item._direction = direction
                 item.setEnabled(False)
                 item.setPos(pos)
                 item.setEnabled(True)
@@ -218,7 +245,7 @@ class Circle(QGraphicsEllipseItem):
             self.update_items_positions()
             return
         if change == QGraphicsItem.ItemSceneHasChanged:
-            self.add_grip_items()
+            self.addItems()
             self.update_items_positions()
             return
         return super(Circle, self).itemChange(change, value)
@@ -232,8 +259,8 @@ class Circle(QGraphicsEllipseItem):
         super(Circle, self).hoverLeaveEvent(event)
         
     def addLine(self, cir2):
-        line = QGraphicsLineItem(self.pos().x(), self.pos().y(), cir2.pos().x(), cir2.pos().y())
-        line.setPen(QPen(Qt.black, 2, Qt.SolidLine))
+        line = conLine(self, cir2)
         self.scene().addItem(line)
+        line.addNameItem() 
         self.lineItems.append([line, cir2])
         cir2.lineItems.append([line, self])
