@@ -98,6 +98,8 @@ class conLine(QGraphicsLineItem):
     def __init__(self, cir1, cir2, parent=None):
         super(conLine, self).__init__(cir1.pos().x(), cir1.pos().y(), cir2.pos().x(), cir2.pos().y(), parent=parent)
         self.setZValue(11)
+        # self.ref1 = cir1
+        # self.ref2 = cir2
         self.label = f'con{random.choice(ascii_uppercase)}'
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)

@@ -2,13 +2,13 @@
 from sys import exit, platform
 
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
-from PyQt5.QtCore import QPointF, QRectF, Qt
-from PyQt5.QtGui import QBrush, QColor, QImage, QPainter, QPalette, QPen
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QBrush, QColor, QImage, QPainter, QPalette
 from PyQt5.QtWidgets import (QApplication, QComboBox, QDialog, QGraphicsScene,
                              QGraphicsView, QGridLayout, QHBoxLayout, QLabel,
                              QMainWindow, QPushButton, QStyleFactory, QWidget)
 
-from circleshape import Circle
+from shapes import Circle
 
 
 class gui(QDialog):
@@ -72,9 +72,13 @@ class gui(QDialog):
         return self.painter.clear()
     
     def generateReport(self):
+        lineList = {}
         for i in self.circleList:
-            print(i.m_items[4].toPlainText())
-            print(i.lineItems)
+            for j,k in i.lineItems:
+                temp = j.nameItem.toPlainText()
+                if temp not in lineList:
+                    lineList[temp] = [i.m_items[4].toPlainText(), k.m_items[4].toPlainText()]
+        print (lineList)
     
     def renderPng(self):
         printed = QImage(300, 200, QImage.Format_ARGB32)
@@ -117,7 +121,6 @@ class gui(QDialog):
         elif event.key() == Qt.Key_Space:
             temp = self.painter.selectedItems()
             for i in range(0, len(temp) - 1):
-                # self.painter.addLine(temp[i].pos().x(), temp[i].pos().y(), temp[i+1].pos().x(), temp[i+1].pos().y())
                 temp[i].addLine(temp[i+1])
                 
 if __name__ == "__main__":
