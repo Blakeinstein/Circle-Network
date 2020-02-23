@@ -3,10 +3,10 @@ from sys import exit, platform
 
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5.QtCore import Qt, QRectF, QSizeF, QPointF
-from PyQt5.QtGui import QBrush, QColor, QImage, QPainter, QPalette, QPdfWriter, QPagedPaintDevice
+from PyQt5.QtGui import QBrush, QColor, QImage, QPainter, QPalette, QPdfWriter, QPagedPaintDevice, QIcon
 from PyQt5.QtWidgets import (QApplication, QComboBox, QDialog, QGraphicsScene,
                              QGraphicsView, QGridLayout, QHBoxLayout, QLabel,
-                             QMainWindow, QPushButton, QStyleFactory, QWidget)
+                             QMainWindow, QPushButton, QStyleFactory, QWidget, QMessageBox)
 from shapes import Circle, conLine, DirectionGripItem
 
 
@@ -88,6 +88,9 @@ class gui(QDialog):
         return self.painter.clear()
     
     def generateReport(self):
+        if not self.lineList:
+            QMessageBox.warning(self, "Generate Report", "No connections exist on canvas").exec()
+            return 0
         printer = QPdfWriter("Output.pdf")
         printer.setPageSize(QPagedPaintDevice.A4)
         printer.setResolution(100)
@@ -155,9 +158,13 @@ class gui(QDialog):
         for item, state in zip(self.painter.items(), last_states):
             item.setVisible(state)
         painter.end()
+        QMessageBox.about(self, "Generate Report", "The canvas was saved as output.pdf").exec()
         
     
     def renderPng(self):
+        if not self.circleList:
+            QMessageBox.warning(self, "Save File", "Canvas is empty! nothing to save").exec()
+            return 0
         printed = QImage(self.painter.width(), self.painter.height(), QImage.Format_ARGB32)
         printer = QPainter(printed)
         for item in self.gripItems:
@@ -167,6 +174,7 @@ class gui(QDialog):
         for item in self.gripItems:
             item.setVisible(True)
         printed.save("./output.png", "PNG")
+        QMessageBox.about(self, "Save File", "The canvas was saved as output.png").exec()
         
         
     def set_dark(self):
