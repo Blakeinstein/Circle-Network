@@ -103,7 +103,7 @@ class conLine(QGraphicsLineItem):
         self.ref2 = cir2
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
-        self.setPen(QPen(Qt.black, 1, Qt.SolidLine))
+        self.setPen(QPen(Qt.black, 2, Qt.SolidLine))
         self.nameItem = None
      
     def setLine(self, x1, y1, x2, y2):
@@ -150,6 +150,7 @@ class Circle(QGraphicsEllipseItem):
     @property
     def radius(self):
         return self._radius
+    
 
     @radius.setter
     def radius(self, r):

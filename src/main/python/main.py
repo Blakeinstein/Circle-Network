@@ -2,13 +2,12 @@
 from sys import exit, platform
 
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QRectF, QSizeF, QPointF
 from PyQt5.QtGui import QBrush, QColor, QImage, QPainter, QPalette, QPdfWriter, QPagedPaintDevice
 from PyQt5.QtWidgets import (QApplication, QComboBox, QDialog, QGraphicsScene,
                              QGraphicsView, QGridLayout, QHBoxLayout, QLabel,
                              QMainWindow, QPushButton, QStyleFactory, QWidget)
-
-from shapes import Circle, conLine
+from shapes import Circle, conLine, DirectionGripItem
 
 
 class gui(QDialog):
@@ -70,9 +69,14 @@ class gui(QDialog):
     def circleList(self):
         return [item for item in self.painter.items() if isinstance(item, Circle)]
     
+    @property
     def lineList(self):
         return [item for item in self.painter.items() if isinstance(item, conLine)]
 
+    @property
+    def gripItems(self):
+        return [item for item in self.painter.items() if isinstance(item, DirectionGripItem)]
+    
     def newCircle(self, cir):
         self.painter.addItem(cir)
         return cir
@@ -84,30 +88,84 @@ class gui(QDialog):
         return self.painter.clear()
     
     def generateReport(self):
-        # lineList = {}
-        # padding = self.painter.height()*10
-        # for i in self.circleList:
-        #     for j,k in i.lineItems:
-        #         if j not in lineList:
-        #             lineList[j] = [i, k]
-        # print (lineList)
-        printed = QPdfWriter("Output.pdf")
-        printed.setCreator("Circle Networks Program by Blaine")
-        printed.setPageSize(QPagedPaintDevice.A4)
-        printer = QPainter(printed)
-        self.painter.render(printer)
-        for i,j in enumerate(self.lineList()):
-            # lineList[j][0].scene().render(printer)
-            # lineList[j][1].scene().render(printer)
-            printer.drawText(0, printer.viewport().height() - 400 + i*200, f'{j.nameItem.toPlainText()}: {j.ref1.m_items[4].toPlainText()}, {j.ref2.m_items[4].toPlainText()}')
-        printer.end()
+        printer = QPdfWriter("Output.pdf")
+        printer.setPageSize(QPagedPaintDevice.A4)
+        printer.setResolution(100)
+        painter = QPainter(printer)
+        delta = 20
+        f = painter.font()
+        f.setPixelSize(delta)
+        painter.setFont(f)
+        
+        # hide all items
+        last_states = []
+        for item in self.painter.items():
+            last_states.append(item.isVisible())
+            item.setVisible(False)
+
+        target = QRectF(0, 0, self.painter.width(), 0)
+
+        for i, item in enumerate(self.lineList):
+            cir1 = item.ref1
+            cir2 = item.ref2
+            item.setVisible(True)
+            cir1.setVisible(True)
+            cir2.setVisible(True)
+            item.nameItem.setVisible(True)
+            cir1.m_items[4].setVisible(True)
+            cir2.m_items[4].setVisible(True)
+            x1 = cir1.pos().x()
+            y1 = cir1.pos().y()
+            x2 = cir2.pos().x()
+            y2 = cir2.pos().y()
+            r1 = cir1.radius
+            r2 = cir2.radius
+            top = min(y1-r1, y2-r2)
+            left = min(x1-r1, x2-r2)
+            if y2 > y1 + abs(r1 - r2) or y2 < y1 - abs(r1 - r2):
+                height = abs(y2 - y1) + r1 + r2
+            else:
+                height = 2*max(r2, r1)
+            target.setHeight(height)
+            
+            renderBox = QRectF(left - delta, top - delta, self.painter.width() - delta, height + 2*delta)
+            if target.bottom() > printer.height():
+                printer.newPage()
+                target.moveTop(0)
+            
+            self.painter.render(painter, target, renderBox)
+            
+            f = painter.font()
+            f.setPixelSize(delta)
+            painter.drawText(
+                QRectF(
+                    target.bottomLeft(), QSizeF(printer.width(), delta + 5)
+                ),
+                f"{item.nameItem.toPlainText()}: {cir1.m_items[4].toPlainText()}, {cir2.m_items[4].toPlainText()}",
+            )
+            item.setVisible(False)
+            cir1.setVisible(False)
+            cir2.setVisible(False)
+            item.nameItem.setVisible(False)
+            cir1.m_items[4].setVisible(False)
+            cir2.m_items[4].setVisible(False)          
+            target.setTop(target.bottom() + delta + 20)
+            
+        # restore visibility
+        for item, state in zip(self.painter.items(), last_states):
+            item.setVisible(state)
+        painter.end()
         
     
     def renderPng(self):
-        printed = QImage(1000, 1000, QImage.Format_ARGB32)
+        printed = QImage(self.painter.width(), self.painter.height(), QImage.Format_ARGB32)
         printer = QPainter(printed)
+        for item in self.gripItems:
+            item.setVisible(False)
         self.painter.render(printer)
         printer.end()
+        for item in self.gripItems:
+            item.setVisible(True)
         printed.save("./output.png", "PNG")
         
         
@@ -142,10 +200,14 @@ class gui(QDialog):
                     del line
                 self.painter.removeItem(i)
                 del i
-        elif event.key() == Qt.Key_Space:
+        if event.key() == Qt.Key_Space:
             temp = self.painter.selectedItems()
-            for i in range(0, len(temp) - 1):
-                temp[i].addLine(temp[i+1])
+            for i in range(0, len(temp)):
+                temp[i].addLine(temp[(i+1)%len(temp)])
+        if event.modifiers() and Qt.ControlModifier:
+            if event.key() == Qt.Key_A:
+                for items in self.circleList:
+                    items.setSelected(True)
                 
 if __name__ == "__main__":
     app = ApplicationContext()
