@@ -3,3 +3,5 @@ output.png
 QTDesign.ui
 test.py
 src/main/python/__pycache__/circleshape.cpython-37.pyc
+Output.pdf
+src/main/python/__pycache__/shapes.cpython-37.pyc

@@ -2,7 +2,7 @@ import random
 from string import ascii_uppercase
 
 from PyQt5.QtCore import QPointF, QRectF, Qt
-from PyQt5.QtGui import QColor, QCursor, QTextCursor, QPainterPath, QPainter, QPen, QBrush
+from PyQt5.QtGui import QColor, QCursor, QPainterPath, QPainter, QPen, QBrush
 
 from PyQt5.QtWidgets import QGraphicsItem, QGraphicsPathItem, QGraphicsEllipseItem, QGraphicsTextItem, QGraphicsLineItem
 
@@ -98,9 +98,9 @@ class conLine(QGraphicsLineItem):
     def __init__(self, cir1, cir2, parent=None):
         super(conLine, self).__init__(cir1.pos().x(), cir1.pos().y(), cir2.pos().x(), cir2.pos().y(), parent=parent)
         self.setZValue(11)
-        # self.ref1 = cir1
-        # self.ref2 = cir2
         self.label = f'con{random.choice(ascii_uppercase)}'
+        self.ref1 = cir1
+        self.ref2 = cir2
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
         self.setPen(QPen(Qt.black, 1, Qt.SolidLine))
@@ -140,9 +140,9 @@ class Circle(QGraphicsEllipseItem):
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
         self.setAcceptHoverEvents(True)
         self.setCursor(QCursor(Qt.PointingHandCursor))
-        self._radius = radius or 50 + random.random() * 300
+        self._radius = radius or 50 + random.random() * 200
         self.label = name if name else f'cir{random.choice(ascii_uppercase)}'
-        self.setPos(x or random.randint(0, 300), y or random.randint(0, 450))
+        self.setPos(x or random.randint(100, 1000), y or random.randint(100, 600))
         self.update_rect()
         self.addItems()
         self.update_items_positions()
