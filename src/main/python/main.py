@@ -2,12 +2,15 @@
 from sys import exit, platform
 
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
-from PyQt5.QtCore import Qt, QRectF, QSizeF, QPointF
-from PyQt5.QtGui import QBrush, QColor, QImage, QPainter, QPalette, QPdfWriter, QPagedPaintDevice, QIcon
+from PyQt5.QtCore import QPointF, QRectF, QSizeF, Qt
+from PyQt5.QtGui import (QBrush, QColor, QIcon, QImage, QPagedPaintDevice,
+                         QPainter, QPalette, QPdfWriter)
 from PyQt5.QtWidgets import (QApplication, QComboBox, QDialog, QGraphicsScene,
                              QGraphicsView, QGridLayout, QHBoxLayout, QLabel,
-                             QMainWindow, QPushButton, QStyleFactory, QWidget, QMessageBox)
-from shapes import Circle, conLine, DirectionGripItem
+                             QMainWindow, QMessageBox, QPushButton,
+                             QStyleFactory, QWidget)
+
+from shapes import Circle, DirectionGripItem, conLine
 
 
 class gui(QDialog):

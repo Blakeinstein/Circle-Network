@@ -2,9 +2,10 @@ import random
 from string import ascii_uppercase
 
 from PyQt5.QtCore import QPointF, QRectF, Qt
-from PyQt5.QtGui import QColor, QCursor, QPainterPath, QPainter, QPen, QBrush
-
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsPathItem, QGraphicsEllipseItem, QGraphicsTextItem, QGraphicsLineItem
+from PyQt5.QtGui import QBrush, QColor, QCursor, QPainter, QPainterPath, QPen
+from PyQt5.QtWidgets import (QGraphicsEllipseItem, QGraphicsItem,
+                             QGraphicsLineItem, QGraphicsPathItem,
+                             QGraphicsTextItem)
 
 
 class GripItem(QGraphicsPathItem):
