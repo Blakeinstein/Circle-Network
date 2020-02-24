@@ -127,7 +127,7 @@ class Gui(QDialog):
         """
         #Show error if no connections exist
         if not self.lineList:
-            QMessageBox.warning(self, "Generate Report", "No connections exist on canvas").exec()
+            QMessageBox.warning(self, "Generate Report", "No connections exist on canvas")
             return 0
         #create write device and set it up
         printer = QPdfWriter("Output.pdf")
@@ -210,7 +210,7 @@ class Gui(QDialog):
         for item, state in zip(self.painter.items(), last_states):
             item.setVisible(state)
         painter.end()
-        QMessageBox.about(self, "Generate Report", "The canvas was saved as output.pdf").exec()
+        QMessageBox.about(self, "Generate Report", "The canvas was saved as output.pdf")
         
     def renderPng(self):
         """
@@ -219,7 +219,7 @@ class Gui(QDialog):
         
         #show error if canvas has no circles
         if not self.circleList:
-            QMessageBox.warning(self, "Save File", "Canvas is empty! nothing to save").exec()
+            QMessageBox.warning(self, "Save File", "Canvas is empty! nothing to save")
             return 0
         
         #create file to print to
@@ -240,7 +240,7 @@ class Gui(QDialog):
 
         #save file
         printed.save("./output.png", "PNG")
-        QMessageBox.about(self, "Save File", "The canvas was saved as output.png").exec()
+        QMessageBox.about(self, "Save File", "The canvas was saved as output.png")
       
     def set_dark(self):
         """

@@ -12,6 +12,13 @@ A desktop application to draw a network of circles using PyQt.
 Built for the screening phase of the FOSSEE program under Python.
  
 ## Screenshots
+> Main window
+<p align="center><img width="95%" src="https://i.imgur.com/HCvPV7f.png"></p>
+> Canvas with circles (output saved with program)
+<p align="center"><img width=95% src="https://i.imgur.com/nujzcwA.png"></p>
+> pdf output
+<p align="center"><img width=95% src="https://i.imgur.com/5f5eibS.png"></p>
+<p align="center"><img width=95% src="https://i.imgur.com/anGmaEm.png"></p>
 
 ## Tech/framework used
 
@@ -39,8 +46,12 @@ Built for the screening phase of the FOSSEE program under Python.
 > Implements the shapes to be drawn on canvas, the Circle using QGraphicsEllipseItem, the connection line using QGraphicsLineItem, the name label using QGraphicsTextItem and grip items using QGraphicsPathItem
 
 ## Installation
-
-#### requirements can be installed using ##
+#### clone this repository by running
+```bash
+git clone https://github.com/Blakeinstein/Circle-Network.git
+```
+or by simply pressing the Clone or Download button and using your own preferred way of obtaining a working copy of the repository
+#### requirements can be installed using
 ```bash
 pip install -r requirements.txt
 ```
@@ -65,11 +76,12 @@ The docs for Qt for C++ library can be found here
 
 ## Afternote and credits
 Apart from the screening phase requirement, this project was a really valuable experience, and I have learnt so much while building this
-
-#### Anything else that seems useful
+Additionally, I would like to thank [@eyllanesc](https://stackoverflow.com/users/6622587/eyllanesc) over at stack overflow for helping me resolve a few minor issues with PyQt
 
 ## License and Ownership
 
-MIT © [![Blaine](https://img.shields.io/badge/Blaine-Github-9cf?style=social&logo=github)](https://github.com/Blakeinstein/)
+MIT © [Blaine](https://github.com/Blakeinstein/)
+
 ![Rishikesh Anand](https://img.shields.io/badge/%20-Rishikesh_Anand-blueviolet)
+
 [![181210041](https://img.shields.io/badge/18120041-%40nitdelhi.ac.in-9cf?style=for-the-badge&logo=Gmail)](mailto:181210041@nitdelhi.ac.in)
