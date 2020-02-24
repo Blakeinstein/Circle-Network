@@ -1,3 +1,20 @@
 {
-    "python.pythonPath": "C:\\Python37-32\\python.exe"
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true,
+    "python.linting.pylintArgs": [
+        "--extension-pkg-whitelist=pygame",  // The extension is "lxml" not "1xml"
+        "--unsafe-load-any-extension=y",
+        "--module-naming-style=any",
+        "--const-naming-style=any",
+        "--class-naming-style=any",
+        "--function-naming-style=any",
+        "--method-naming-style=any",
+        "--attr-naming-style=any",
+        "--argument-naming-style=any",
+        "--variable-naming-style=any",
+        "--class-attribute-naming-style=any",
+        "--inlinevar-naming-style=any"
+    ],
+    "python.pythonPath": "C:\\Python37-32\\python.exe",
+    "python.autoComplete.extraPaths": ["./","./src/main/python/"],
 }

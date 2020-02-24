@@ -1,24 +1,35 @@
+"""
+Defines shapes used in circle networks,
+Contains Definitions for Circle, GripItem, DirectionGripItem, ConLine and NameItem
+"""
 import random
 from string import ascii_uppercase
 
 from PyQt5.QtCore import QPointF, QRectF, Qt
-from PyQt5.QtGui import QBrush, QColor, QCursor, QPainter, QPainterPath, QPen
+from PyQt5.QtGui import QBrush, QColor, QCursor, QPainterPath, QPen
 from PyQt5.QtWidgets import (QGraphicsEllipseItem, QGraphicsItem,
                              QGraphicsLineItem, QGraphicsPathItem,
                              QGraphicsTextItem)
 
 
 class GripItem(QGraphicsPathItem):
+    """
+    Extends PyQt5's QGraphicsPathItem to create the general structure of the Grabbable points for resizing shapes.
+    Takes two parameters, reference item (On which the grip items are to appear) and the grip index
+    """
     circle = QPainterPath()
     circle.addEllipse(QRectF(-5, -5, 10, 10))
 
     def __init__(self, annotation_item, index):
+        """
+        Extends PyQt5's QGraphicsPathItem to create the general structure of the Grabbable points for resizing shapes.
+        """
         super(GripItem, self).__init__()
         self.m_annotation_item = annotation_item
         self.m_index = index
 
         self.setPath(GripItem.circle)
-        self.setPen(QPen(QColor(),-1))  
+        self.setPen(QPen(QColor(), -1))  
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
@@ -27,34 +38,58 @@ class GripItem(QGraphicsPathItem):
         self.setCursor(QCursor(Qt.PointingHandCursor))
 
     def hoverEnterEvent(self, event):
+        """
+        defines shape highlighting on Mouse Over
+        """
         self.setPen(QPen(QColor("black"), 2))
         self.setBrush(QColor("red"))
         super(GripItem, self).hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):
+        """
+        defines shape highlighting on Mouse Leave
+        """
         self.setPen(QPen(Qt.transparent))
         self.setBrush(Qt.transparent)   
         super(GripItem, self).hoverLeaveEvent(event)
 
     def mouseReleaseEvent(self, event):
+        """
+        Automatically deselects grip item on mouse release
+        """
         self.setSelected(False)
         super(GripItem, self).mouseReleaseEvent(event)
 
     def itemChange(self, change, value):
+        """
+        Calls movepoint from reference item, with the index of this grip item
+        """
         if change == QGraphicsItem.ItemPositionChange and self.isEnabled():
             self.m_annotation_item.movePoint(self.m_index, value)
         return super(GripItem, self).itemChange(change, value)
    
 class DirectionGripItem(GripItem):
+    """
+    Extends grip items for vertical and horizontal directions, with hover events and directional changes
+    """
     def __init__(self, annotation_item, direction=Qt.Horizontal, parent=None):
+        """
+        Extends grip items for vertical and horizontal directions, with hover events and directional changes
+        """
         super(DirectionGripItem, self).__init__(annotation_item, parent)
         self._direction = direction
 
     @property
     def direction(self):
+        """
+        property that returns the current intended resize direction of the grip item object
+        """
         return self._direction
     
     def hoverEnterEvent(self, event):
+        """
+        Changes cursor to horizontal resize or vertical resize depending on the direction of the grip item on mouse enter
+        """
         if self._direction == Qt.Horizontal:
             self.setCursor(QCursor(Qt.SizeHorCursor))
         else:
@@ -62,10 +97,16 @@ class DirectionGripItem(GripItem):
         super(DirectionGripItem, self).hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):
+        """
+        reverts cursor to default on mouse leave
+        """
         self.setCursor(QCursor(Qt.ArrowCursor))
         super(DirectionGripItem, self).hoverLeaveEvent(event)
 
     def itemChange(self, change, value):
+        """
+        Moves position of grip item on resize or reference circle's position change
+        """
         if change == QGraphicsItem.ItemPositionChange and self.isEnabled():
             p = QPointF(self.pos())
             if self.direction == Qt.Horizontal:
@@ -77,9 +118,15 @@ class DirectionGripItem(GripItem):
         return super(DirectionGripItem, self).itemChange(change, value)
 
       
-class itemName(QGraphicsTextItem):
+class ItemName(QGraphicsTextItem):
+    """
+    Extends PyQt5's QGraphicsTextItem to be editable name labels for shapes
+    """
     def __init__(self, label, index, parent=None):
-        super(itemName, self).__init__(label, parent)
+        """
+        Extends PyQt5's QGraphicsTextItem to be editable name labels for shapes
+        """
+        super(ItemName, self).__init__(label, parent)
         self.m_index = index
         self.setZValue(11)
         self.setDefaultTextColor(Qt.black)
@@ -88,16 +135,28 @@ class itemName(QGraphicsTextItem):
         self.setTextWidth(-1)
     
     def hoverEnterEvent(self, event):
+        """
+        set cursor to TextEdit cursor on mouse enter
+        """
         self.setCursor(QCursor(Qt.IBeamCursor))
-        super(itemName, self).hoverEnterEvent(event)
+        super(ItemName, self).hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):
+        """
+        revert cursor to default on mouse leave
+        """
         self.setCursor(QCursor(Qt.ArrowCursor))
-        super(itemName, self).hoverLeaveEvent(event)
+        super(ItemName, self).hoverLeaveEvent(event)
     
-class conLine(QGraphicsLineItem):
+class ConLine(QGraphicsLineItem):
+    """
+    Extends PyQt5's QGraphicsLineItem to act as the Connection line between any two circles.
+    """
     def __init__(self, cir1, cir2, parent=None):
-        super(conLine, self).__init__(cir1.pos().x(), cir1.pos().y(), cir2.pos().x(), cir2.pos().y(), parent=parent)
+        """
+        Extends PyQt5's QGraphicsLineItem to act as the Connection line between any two circles.
+        """
+        super(ConLine, self).__init__(cir1.pos().x(), cir1.pos().y(), cir2.pos().x(), cir2.pos().y(), parent=parent)
         self.setZValue(11)
         self.label = f'con{random.choice(ascii_uppercase)}'
         self.ref1 = cir1
@@ -108,18 +167,27 @@ class conLine(QGraphicsLineItem):
         self.nameItem = None
      
     def setLine(self, x1, y1, x2, y2):
-        super(conLine, self).setLine(x1, y1, x2, y2)
+        """
+        used to update line on reference item change call this on update_items_positions
+        """
+        super(ConLine, self).setLine(x1, y1, x2, y2)
         self.updateAlignment()
     
     def addNameItem(self):
+        """
+        used to add a name item label
+        """
         if self.scene() and not self.nameItem:
-            nameItem = itemName(self.label, 1)
+            nameItem = ItemName(self.label, 1)
             self.scene().addItem(nameItem)
             self.nameItem = nameItem
             
         self.updateAlignment()
 
     def updateAlignment(self):
+        """
+        updates alignment along the line on reference circle's position update
+        """
         nameItem = self.nameItem
         line = self.line()
         angle = line.angle()
@@ -129,8 +197,13 @@ class conLine(QGraphicsLineItem):
         nameItem.setEnabled(True)
         
 class Circle(QGraphicsEllipseItem):
-    
+    """
+    Extends PyQt5's QGraphicsEllipseItem to create the basic structure of the circle with given center and radius or random if not provided
+    """
     def __init__(self, radius=None, name=None, x=0, y=0, parent=None):
+        """
+        Extends PyQt5's QGraphicsEllipseItem to create the basic structure of the circle with given center and radius or random if not provided
+        """
         super(Circle, self).__init__(parent)
         self.setZValue(11)
         self.m_items = []
@@ -150,11 +223,17 @@ class Circle(QGraphicsEllipseItem):
 
     @property
     def radius(self):
+        """
+        Property that returns the radius of the circle item
+        """
         return self._radius
     
 
     @radius.setter
     def radius(self, r):
+        """
+        updates circle properties on radius update
+        """
         if r <= 0:
             raise ValueError("radius must be positive")
         self._radius = r
@@ -164,11 +243,17 @@ class Circle(QGraphicsEllipseItem):
         self.update_items_positions()
   
     def update_rect(self):
+        """
+        used to set center of circle as the anchor so the shape resizes about it and not the top left corner
+        """
         rect = QRectF(0, 0, 2 * self.radius, 2 * self.radius)
         rect.moveCenter(self.rect().center())
         self.setRect(rect)
 
     def addItems(self):
+        """
+        adds grip items and the name item to parent
+        """
         if self.scene() and not self.m_items:
             for i, (direction) in enumerate(
                 (
@@ -180,7 +265,7 @@ class Circle(QGraphicsEllipseItem):
                 )
             ):
                 if i == 4:
-                    item = itemName(self.label, i)
+                    item = ItemName(self.label, i)
                 else:
                     item = DirectionGripItem(self, direction, i)
                 self.scene().addItem(item)
@@ -188,6 +273,9 @@ class Circle(QGraphicsEllipseItem):
 
         
     def movePoint(self, i, p):
+        """
+        moves grip items and name label for the circle
+        """
         if 0 <= i < min(5, len(self.m_items)):
             item_selected = self.m_items[i]
             lp = self.mapFromScene(p)
@@ -201,6 +289,9 @@ class Circle(QGraphicsEllipseItem):
         
 
     def update_items_positions(self, index_no_updates=None):
+        """
+        updates name label, lines, grip items
+        """
         index_no_updates = index_no_updates or []
         for i, (item, direction) in enumerate(
             zip(
@@ -231,11 +322,17 @@ class Circle(QGraphicsEllipseItem):
             line.setEnabled(True)
             
     def indexOf(self, p):
+        """
+        behaves as an iterator over grip items positions relative to the circle
+        """
         for i in range(4):
             if p == self.point(i):
                 return i
 
     def point(self, index):
+        """
+        yields a list of positions of grip items in a circle
+        """
         if 0 <= index < 4:
             return [
                 QPointF(0, -self.radius),
@@ -245,6 +342,9 @@ class Circle(QGraphicsEllipseItem):
             ][index]
 
     def itemChange(self, change, value):
+        """
+        Overloads and extends QGraphicsEllipseItem to also update gripitem, label and line positions
+        """
         if change == QGraphicsItem.ItemPositionHasChanged:
             self.update_items_positions()
             return
@@ -255,15 +355,24 @@ class Circle(QGraphicsEllipseItem):
         return super(Circle, self).itemChange(change, value)
 
     def hoverEnterEvent(self, event):
+        """
+        Enables highlighting on mouseOver
+        """
         self.setBrush(QColor(255, 0, 0, 100))
         super(Circle, self).hoverEnterEvent(event)
 
     def hoverLeaveEvent(self, event):
+        """
+        Clears highlighting on mouse Leave
+        """
         self.setBrush(QBrush(Qt.NoBrush))
         super(Circle, self).hoverLeaveEvent(event)
         
     def addLine(self, cir2):
-        line = conLine(self, cir2)
+        """
+        Adds a line to parent and reference circle when called with reference to another circle taken as an argument 
+        """
+        line = ConLine(self, cir2)
         self.scene().addItem(line)
         line.addNameItem() 
         self.lineItems.append([line, cir2])

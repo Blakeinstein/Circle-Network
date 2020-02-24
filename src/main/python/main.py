@@ -1,33 +1,35 @@
 #!/usr/bin/env python
-from sys import exit, platform
+from sys import exit as sexit
+from sys import platform
 
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
-from PyQt5.QtCore import QPointF, QRectF, QSizeF, Qt
-from PyQt5.QtGui import (QBrush, QColor, QIcon, QImage, QPagedPaintDevice,
-                         QPainter, QPalette, QPdfWriter)
+from PyQt5.QtCore import QRectF, QSizeF, Qt
+from PyQt5.QtGui import (QBrush, QColor, QImage, QPagedPaintDevice, QPainter,
+                         QPalette, QPdfWriter)
 from PyQt5.QtWidgets import (QApplication, QComboBox, QDialog, QGraphicsScene,
                              QGraphicsView, QGridLayout, QHBoxLayout, QLabel,
-                             QMainWindow, QMessageBox, QPushButton,
-                             QStyleFactory, QWidget)
+                             QMessageBox, QPushButton, QStyleFactory)
 
-from shapes import Circle, DirectionGripItem, conLine
+from shapes import Circle, DirectionGripItem, ConLine
 
 
-class gui(QDialog):
+class Gui(QDialog):
+    """
+    Extends PyQt5's QDialog to create the general application window for the app
+    """
     def __init__(self, parent=None):
-        super(gui, self).__init__(parent)
+        super(Gui, self).__init__(parent)
         if platform == 'win32':
             QApplication.setStyle(QStyleFactory.create('Fusion'))
-            self.set_dark()   
+            self.set_dark()
         elif platform == 'darwin':
-            QApplication.setStyle(QStyleFactory.create('Macintosh'))            
+            QApplication.setStyle(QStyleFactory.create('Macintosh'))
             QApplication.setPalette(QApplication.style().standardPalette())
         self.setWindowTitle('Circle Networks')
         self.resize(1280, 720)
         self.painter = QGraphicsScene(0, 0, self.width() - 50, self.height() - 70)
         self.painter.setBackgroundBrush(QBrush(Qt.white))
         self.createTopLayout()
-        self.sortedItems = []
         self.canvas = QGraphicsView(self.painter)
         mainLayout = QGridLayout()
         mainLayout.addLayout(self.topLayout, 0, 0, 1, -1)
@@ -59,37 +61,37 @@ class gui(QDialog):
         self.topLayout.addWidget(button4)
         self.topLayout.addWidget(button2)
         self.topLayout.addWidget(button3)
-    
+
     def resizeEvent(self, event):
         if self.painter:
             self.resizer()
-        return super(gui, self).resizeEvent(event)
-    
+        return super(Gui, self).resizeEvent(event)
+
     def resizer(self):
         self.painter.setSceneRect(0, 0, self.width() - 50, self.height() - 70)
-                
+
     @property
     def circleList(self):
         return [item for item in self.painter.items() if isinstance(item, Circle)]
-    
+
     @property
     def lineList(self):
-        return [item for item in self.painter.items() if isinstance(item, conLine)]
+        return [item for item in self.painter.items() if isinstance(item, ConLine)]
 
     @property
     def gripItems(self):
         return [item for item in self.painter.items() if isinstance(item, DirectionGripItem)]
-    
+
     def newCircle(self, cir):
         self.painter.addItem(cir)
         return cir
 
     def addCircle(self):
         return self.newCircle(Circle())
-    
+
     def clearCanvas(self):
         return self.painter.clear()
-    
+
     def generateReport(self):
         if not self.lineList:
             QMessageBox.warning(self, "Generate Report", "No connections exist on canvas").exec()
@@ -102,7 +104,7 @@ class gui(QDialog):
         f = painter.font()
         f.setPixelSize(delta)
         painter.setFont(f)
-        
+
         # hide all items
         last_states = []
         for item in self.painter.items():
@@ -111,7 +113,7 @@ class gui(QDialog):
 
         target = QRectF(0, 0, self.painter.width(), 0)
 
-        for i, item in enumerate(self.lineList):
+        for item in self.lineList:
             cir1 = item.ref1
             cir2 = item.ref2
             item.setVisible(True)
@@ -133,14 +135,14 @@ class gui(QDialog):
             else:
                 height = 2*max(r2, r1)
             target.setHeight(height)
-            
-            renderBox = QRectF(left - delta, top - delta, self.painter.width() - delta, height + 2*delta)
+            renderBox = QRectF(left - delta,
+                               top - delta,
+                               self.painter.width() - delta,
+                               height + 2*delta)
             if target.bottom() > printer.height():
                 printer.newPage()
                 target.moveTop(0)
-            
             self.painter.render(painter, target, renderBox)
-            
             f = painter.font()
             f.setPixelSize(delta)
             painter.drawText(
@@ -154,16 +156,13 @@ class gui(QDialog):
             cir2.setVisible(False)
             item.nameItem.setVisible(False)
             cir1.m_items[4].setVisible(False)
-            cir2.m_items[4].setVisible(False)          
+            cir2.m_items[4].setVisible(False)
             target.setTop(target.bottom() + delta + 20)
-            
         # restore visibility
         for item, state in zip(self.painter.items(), last_states):
             item.setVisible(state)
         painter.end()
         QMessageBox.about(self, "Generate Report", "The canvas was saved as output.pdf").exec()
-        
-    
     def renderPng(self):
         if not self.circleList:
             QMessageBox.warning(self, "Save File", "Canvas is empty! nothing to save").exec()
@@ -178,8 +177,7 @@ class gui(QDialog):
             item.setVisible(True)
         printed.save("./output.png", "PNG")
         QMessageBox.about(self, "Save File", "The canvas was saved as output.png").exec()
-        
-        
+      
     def set_dark(self):
         dark_palette = QPalette()
         dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
@@ -222,6 +220,6 @@ class gui(QDialog):
                 
 if __name__ == "__main__":
     app = ApplicationContext()
-    test = gui()
+    test = Gui()
     test.show()
-    exit(app.app.exec_())
+    sexit(app.app.exec_())
