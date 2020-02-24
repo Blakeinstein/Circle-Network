@@ -57,13 +57,19 @@ The docs for Qt for C++ library can be found here
 
 ## How to use?
 
+- To add a circle, Press the **add** button to add a new circle. a
+- To delete a circle, Press the **Del** or the **Backspace** key on your keyboard with the circle selected
+- To add a connection, Select two or more circles then press **Space** to add connections
+- To change any label, simply **click** on any text to enter edit mode.
+- Click on **save** or **generate report** to save canvas as png or generate a report in pdf format, the files are saved as Output.png and Output.pdf respectively
 
-## Credits
-Give proper credits. This could be a link to any repo which inspired you to build this project, any blogposts or links to people who contrbuted in this project. 
+## Afternote and credits
+Apart from the screening phase requirement, this project was a really valuable experience, and I have learnt so much while building this
 
 #### Anything else that seems useful
 
-## License
-A short snippet describing the license (MIT, Apache etc)
+## License and Ownership
 
-MIT © [Blaine](https://github.com/Blakeinstein/)
+MIT © [![Blaine](https://github.com/Blakeinstein/)](https://img.shields.io/badge/Blaine-Github-9cf?style=social&logo=github)
+![Rishikesh Anand](https://img.shields.io/badge/%20-Rishikesh_Anand-blueviolet)
+[![181210041](mailto:181210041@nitdelhi.ac.in)](https://img.shields.io/badge/18120041-%40nitdelhi.ac.in-9cf?style=for-the-badge&logo=Gmail)
