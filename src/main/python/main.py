@@ -285,11 +285,11 @@ class Gui(QDialog):
         #attach lines between two selected circles, only if 2 or more items are selected, though the order the items are selected in are not taken into consideration
         if event.key() == Qt.Key_Space:
             temp = self.painter.selectedItems()
-            if len(temp) >= 2: 
+            if len(temp) >= 2:
                 for i in range(0, len(temp)):
                     temp[i].addLine(temp[(i+1)%len(temp)])
         
-        #handle select all on Ctrl + A
+        #handle select all on Ctrl +
         if event.modifiers() and Qt.ControlModifier:
             if event.key() == Qt.Key_A:
                 for items in self.circleList:

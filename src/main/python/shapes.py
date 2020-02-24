@@ -301,7 +301,7 @@ class Circle(QGraphicsEllipseItem):
                     Qt.Horizontal,
                     Qt.Vertical,
                     Qt.Horizontal,
-                    Qt.AlignCenter,
+                    Qt.AlignCenter, #garbage value just to iterate over the name item as well
                 ),
             ),
         ):
