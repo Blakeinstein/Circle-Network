@@ -1,7 +1,7 @@
-# FOSSEE-PYTHON ##
+# Circle Networks ##
 A desktop application to draw a network of circles using PyQt.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 [![Run on Repl.it](https://repl.it/badge/github/Blakeinstein/Circle-Network)](https://repl.it/github/Blakeinstein/Circle-Network)
 ![Python](https://img.shields.io/badge/python-v3.6+-blue.svg)
 [![python-camelCase-style](https://img.shields.io/badge/code%20style-camelCase-brightgreen.svg?style=flat)](https://wiki.c2.com/?CamelCase)
@@ -17,7 +17,7 @@ Built for the screening phase of the FOSSEE program under Python.
 > Canvas with circles (output saved with program)
 <p align="center"><img width=95% src="https://i.imgur.com/nujzcwA.png"></p>
 > pdf output
-<p align="center"><img width=45% src="https://i.imgur.com/5f5eibS.png"></p>&nbsp;<p align="center"><img width=45% src="https://i.imgur.com/anGmaEm.png"></p>
+<p align="center"><img width=45% src="https://i.imgur.com/5f5eibS.png">&nbsp;<img width=45% src="https://i.imgur.com/anGmaEm.png"></p>
 
 ## Tech/framework used
 
