@@ -208,7 +208,8 @@ class Circle(QGraphicsEllipseItem):
         self.setZValue(11)
         self.m_items = []
         self.lineItems = []
-        self.setPen(QPen(Qt.black, 3, Qt.SolidLine))
+        pen = QPen(QColor(random.randint(0,255), random.randint(0,255), random.randint(0,255)), 3, Qt.SolidLine)
+        self.setPen(pen)
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
