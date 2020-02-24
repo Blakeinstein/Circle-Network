@@ -13,12 +13,11 @@ Built for the screening phase of the FOSSEE program under Python.
  
 ## Screenshots
 > Main window
-<p align="center><img width="95%" src="https://i.imgur.com/HCvPV7f.png"></p>
+<p align="center"><img width="95%" src="https://i.imgur.com/HCvPV7f.png"></p>
 > Canvas with circles (output saved with program)
 <p align="center"><img width=95% src="https://i.imgur.com/nujzcwA.png"></p>
 > pdf output
-<p align="center"><img width=95% src="https://i.imgur.com/5f5eibS.png"></p>
-<p align="center"><img width=95% src="https://i.imgur.com/anGmaEm.png"></p>
+<p align="center"><img width=45% src="https://i.imgur.com/5f5eibS.png"></p>&nbsp;<p align="center"><img width=45% src="https://i.imgur.com/anGmaEm.png"></p>
 
 ## Tech/framework used
 
