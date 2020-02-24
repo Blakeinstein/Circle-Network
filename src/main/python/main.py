@@ -18,6 +18,9 @@ class Gui(QDialog):
     Extends PyQt5's QDialog to create the general application window for the app
     """
     def __init__(self, parent=None):
+        """
+        Extends PyQt5's QDialog to create the general application window for the app
+        """
         super(Gui, self).__init__(parent)
         if platform == 'win32':
             QApplication.setStyle(QStyleFactory.create('Fusion'))
@@ -29,7 +32,7 @@ class Gui(QDialog):
         self.resize(1280, 720)
         self.painter = QGraphicsScene(0, 0, self.width() - 50, self.height() - 70)
         self.painter.setBackgroundBrush(QBrush(Qt.white))
-        self.createTopLayout()
+        self.createToolbar()
         self.canvas = QGraphicsView(self.painter)
         mainLayout = QGridLayout()
         mainLayout.addLayout(self.topLayout, 0, 0, 1, -1)
@@ -37,13 +40,19 @@ class Gui(QDialog):
         self.setLayout(mainLayout)
 
     def changeCanvasBG(self, style):
+        """
+        used in conjunction with the combox box to toggle between transparent and white canvas background
+        """
         if style == 'white background':
             self.painter.setBackgroundBrush(QBrush(Qt.white))
         else:
             self.painter.setBackgroundBrush(QBrush())
         self.canvas = QGraphicsView(self.painter)
 
-    def createTopLayout(self):
+    def createToolbar(self):
+        """
+        Builds the toolbar containing the style combo box, add circle to canvas, clear canvas and save to png or pdf
+        """
         self.topLayout = QHBoxLayout()
         button1 = QPushButton("Add", clicked = self.addCircle)
         button2 = QPushButton("Generate Report", clicked = self.generateReport)
@@ -63,44 +72,69 @@ class Gui(QDialog):
         self.topLayout.addWidget(button3)
 
     def resizeEvent(self, event):
+        """
+        resizes canvas on window resize
+        """
         if self.painter:
-            self.resizer()
+            self.painter.setSceneRect(0, 0, self.width() - 50, self.height() - 70)
         return super(Gui, self).resizeEvent(event)
-
-    def resizer(self):
-        self.painter.setSceneRect(0, 0, self.width() - 50, self.height() - 70)
 
     @property
     def circleList(self):
+        """
+        returns a list of circles on the canvas
+        """
         return [item for item in self.painter.items() if isinstance(item, Circle)]
 
     @property
     def lineList(self):
+        """
+        returns a list of lines on the canvas
+        """
         return [item for item in self.painter.items() if isinstance(item, ConLine)]
 
     @property
     def gripItems(self):
+        """
+        returns a list of gripItems on the canvas
+        """
         return [item for item in self.painter.items() if isinstance(item, DirectionGripItem)]
 
     def newCircle(self, cir):
+        """
+        used to manually add circles, mainly for debugging
+        """
         self.painter.addItem(cir)
         return cir
 
     def addCircle(self):
-        return self.newCircle(Circle())
+        """
+        called to add a new circle with random attributes on canvas
+        """
+        cir = Circle()
+        self.painter.addItem(cir)
+        return cir
 
     def clearCanvas(self):
+        """
+        used as a proxy function to clear QGraphicsScene before definition
+        """
         return self.painter.clear()
 
     def generateReport(self):
+        """
+        generates a pdf report with information for every connection on canvas, with line name and reference circle names
+        """
+        #Show error if no connections exist
         if not self.lineList:
             QMessageBox.warning(self, "Generate Report", "No connections exist on canvas").exec()
             return 0
+        #create write device and set it up
         printer = QPdfWriter("Output.pdf")
         printer.setPageSize(QPagedPaintDevice.A4)
         printer.setResolution(100)
         painter = QPainter(printer)
-        delta = 20
+        delta = 20 #font height and padding
         f = painter.font()
         f.setPixelSize(delta)
         painter.setFont(f)
@@ -111,17 +145,22 @@ class Gui(QDialog):
             last_states.append(item.isVisible())
             item.setVisible(False)
 
+        #create render map, to render screen to
         target = QRectF(0, 0, self.painter.width(), 0)
 
         for item in self.lineList:
             cir1 = item.ref1
             cir2 = item.ref2
+            
+            #set items to be rendered as visible
             item.setVisible(True)
             cir1.setVisible(True)
             cir2.setVisible(True)
             item.nameItem.setVisible(True)
             cir1.m_items[4].setVisible(True)
             cir2.m_items[4].setVisible(True)
+            
+            #build render area from current item positons
             x1 = cir1.pos().x()
             y1 = cir1.pos().y()
             x2 = cir2.pos().x()
@@ -139,9 +178,13 @@ class Gui(QDialog):
                                top - delta,
                                self.painter.width() - delta,
                                height + 2*delta)
+            
+            #move to new page if target box exceeds page bottom
             if target.bottom() > printer.height():
                 printer.newPage()
                 target.moveTop(0)
+            
+            #render diagram and text to pdf 
             self.painter.render(painter, target, renderBox)
             f = painter.font()
             f.setPixelSize(delta)
@@ -151,34 +194,58 @@ class Gui(QDialog):
                 ),
                 f"{item.nameItem.toPlainText()}: {cir1.m_items[4].toPlainText()}, {cir2.m_items[4].toPlainText()}",
             )
+            
+            #remove items that were previously set visible
             item.setVisible(False)
             cir1.setVisible(False)
             cir2.setVisible(False)
             item.nameItem.setVisible(False)
             cir1.m_items[4].setVisible(False)
             cir2.m_items[4].setVisible(False)
+            
+            #padd down and target top to bottom + padding
             target.setTop(target.bottom() + delta + 20)
-        # restore visibility
+        
+        # restore visibility for all items
         for item, state in zip(self.painter.items(), last_states):
             item.setVisible(state)
         painter.end()
         QMessageBox.about(self, "Generate Report", "The canvas was saved as output.pdf").exec()
+        
     def renderPng(self):
+        """
+        renders current items in cavas to png
+        """
+        
+        #show error if canvas has no circles
         if not self.circleList:
             QMessageBox.warning(self, "Save File", "Canvas is empty! nothing to save").exec()
             return 0
+        
+        #create file to print to
         printed = QImage(self.painter.width(), self.painter.height(), QImage.Format_ARGB32)
         printer = QPainter(printed)
+        
+        #set grip items invisible
         for item in self.gripItems:
             item.setVisible(False)
+        
+        #render screen
         self.painter.render(printer)
         printer.end()
+        
+        #restore visibilty for grip items
         for item in self.gripItems:
             item.setVisible(True)
+
+        #save file
         printed.save("./output.png", "PNG")
         QMessageBox.about(self, "Save File", "The canvas was saved as output.png").exec()
       
     def set_dark(self):
+        """
+        create dark palette for fusion theme of PyQt, basically DARK MODE!!!!!!!!!
+        """
         dark_palette = QPalette()
         dark_palette.setColor(QPalette.Window, QColor(53, 53, 53))
         dark_palette.setColor(QPalette.WindowText, Qt.white)
@@ -196,6 +263,11 @@ class Gui(QDialog):
         QApplication.setPalette(dark_palette)
 
     def keyPressEvent(self, event):
+        """
+        overloads QDialog to handle key press events
+        """
+        
+        #to delete items and free the memory occupied
         if event.key() == Qt.Key_Delete or event.key() == Qt.Key_Backspace:
             for i in self.painter.selectedItems():
                 i.setEnabled(False)
@@ -209,10 +281,15 @@ class Gui(QDialog):
                     del line
                 self.painter.removeItem(i)
                 del i
+        
+        #attach lines between two selected circles, only if 2 or more items are selected, though the order the items are selected in are not taken into consideration
         if event.key() == Qt.Key_Space:
             temp = self.painter.selectedItems()
-            for i in range(0, len(temp)):
-                temp[i].addLine(temp[(i+1)%len(temp)])
+            if len(temp) >= 2: 
+                for i in range(0, len(temp)):
+                    temp[i].addLine(temp[(i+1)%len(temp)])
+        
+        #handle select all on Ctrl + A
         if event.modifiers() and Qt.ControlModifier:
             if event.key() == Qt.Key_A:
                 for items in self.circleList:

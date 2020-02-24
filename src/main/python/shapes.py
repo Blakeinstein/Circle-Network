@@ -316,7 +316,7 @@ class Circle(QGraphicsEllipseItem):
                 item.setEnabled(False)
                 item.setPos(pos)
                 item.setEnabled(True)
-        for line,ref  in self.lineItems:
+        for line, ref  in self.lineItems:
             line.setEnabled(False)
             line.setLine(self.pos().x(), self.pos().y(), ref.pos().x(), ref.pos().y())
             line.setEnabled(True)
