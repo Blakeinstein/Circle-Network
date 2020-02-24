@@ -70,6 +70,6 @@ Apart from the screening phase requirement, this project was a really valuable e
 
 ## License and Ownership
 
-MIT © [![Blaine](https://github.com/Blakeinstein/)](https://img.shields.io/badge/Blaine-Github-9cf?style=social&logo=github)
-![Rishikesh Anand](https://img.shields.io/badge/%20-Rishikesh_Anand-blueviolet)
-[![181210041](mailto:181210041@nitdelhi.ac.in)](https://img.shields.io/badge/18120041-%40nitdelhi.ac.in-9cf?style=for-the-badge&logo=Gmail)
+MIT © [![Blaine](https://img.shields.io/badge/Blaine-Github-9cf?style=social&logo=github)](https://github.com/Blakeinstein/)
+[![Rishikesh Anand]](https://img.shields.io/badge/%20-Rishikesh_Anand-blueviolet)
+[![181210041](https://img.shields.io/badge/18120041-%40nitdelhi.ac.in-9cf?style=for-the-badge&logo=Gmail)](mailto:181210041@nitdelhi.ac.in)
