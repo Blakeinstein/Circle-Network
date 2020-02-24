@@ -50,8 +50,9 @@ Built for the screening phase of the FOSSEE program under Python.
 git clone https://github.com/Blakeinstein/Circle-Network.git
 ```
 or by simply pressing the Clone or Download button and using your own preferred way of obtaining a working copy of the repository
-#### requirements can be installed using
+#### requirements can be installed using (PIP should be up-to-date! tested on 20.0.2)
 ```bash
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
 #### Then run using
