@@ -286,8 +286,8 @@ class Gui(QDialog):
         if event.key() == Qt.Key_Space:
             temp = self.painter.selectedItems()
             if len(temp) >= 2:
-                for i in range(0, len(temp)):
-                    temp[i].addLine(temp[(i+1)%len(temp)])
+                for i in range(0, len(temp)-1):
+                    temp[i].addLine(temp[(i+1)])
         
         #handle select all on Ctrl +
         if event.modifiers() and Qt.ControlModifier:

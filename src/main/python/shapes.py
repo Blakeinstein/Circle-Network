@@ -193,7 +193,7 @@ class ConLine(QGraphicsLineItem):
         angle = line.angle()
         nameItem.setEnabled(False)
         nameItem.setPos(line.center())
-        nameItem.setRotation(180-angle if 90<angle<=270 else -angle)
+        nameItem.setRotation(180-angle if 90 < angle <= 270 else - angle)
         nameItem.setEnabled(True)
         
 class Circle(QGraphicsEllipseItem):
@@ -374,6 +374,6 @@ class Circle(QGraphicsEllipseItem):
         """
         line = ConLine(self, cir2)
         self.scene().addItem(line)
-        line.addNameItem() 
+        line.addNameItem()
         self.lineItems.append([line, cir2])
         cir2.lineItems.append([line, self])

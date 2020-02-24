@@ -1,7 +1,7 @@
 # FOSSEE-PYTHON ##
 A desktop application to draw a network of circles using PyQt.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 [![Run on Repl.it](https://repl.it/badge/github/Blakeinstein/Circle-Network)](https://repl.it/github/Blakeinstein/Circle-Network)
 ![Python](https://img.shields.io/badge/python-v3.6+-blue.svg)
 [![python-camelCase-style](https://img.shields.io/badge/code%20style-camelCase-brightgreen.svg?style=flat)](https://wiki.c2.com/?CamelCase)
@@ -30,12 +30,12 @@ Built for the screening phase of the FOSSEE program under Python.
 > 6. A pdf report can be generated displaying the connection between different circles on clicking the "Generate Report" button.
 > 7. An image file as png can be saved of whatever is displayed in the canvas area on clicking the "Save" button.
 
-## Code Example #
+## Code overview #
 
-####src/main/python/main.py
+> #### src/main/python/main.py
 > Implements the main window with the toolbar using QHBoxLayout, and the canvas using QGraphicsScene on a QDialog
 
-####src/main/python/shapes.py
+> #### src/main/python/shapes.py
 > Implements the shapes to be drawn on canvas, the Circle using QGraphicsEllipseItem, the connection line using QGraphicsLineItem, the name label using QGraphicsTextItem and grip items using QGraphicsPathItem
 
 ## Installation
@@ -52,15 +52,11 @@ fbs run
 
 The QtForPython docs were used to implement the program, one can reference them here 
 - [QtForPython](https://doc.qt.io/qtforpython/contents.html)
-The standard docs for C++ library of Qt can be found here
+The docs for Qt for C++ library can be found here
 - [Qt](https://doc.qt.io/)
 
 ## How to use?
 
-
-## Contribute
-
-Let people know how they can contribute into your project. A [contributing guideline](https://github.com/zulip/zulip-electron/blob/master/CONTRIBUTING.md) will be a big plus.
 
 ## Credits
 Give proper credits. This could be a link to any repo which inspired you to build this project, any blogposts or links to people who contrbuted in this project. 
