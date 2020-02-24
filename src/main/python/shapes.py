@@ -206,18 +206,23 @@ class Circle(QGraphicsEllipseItem):
         """
         super(Circle, self).__init__(parent)
         self.setZValue(11)
+        #declare list of Graphic items linked to this shape
         self.m_items = []
         self.lineItems = []
+        #create random color
         pen = QPen(QColor(random.randint(0,255), random.randint(0,255), random.randint(0,255)), 3, Qt.SolidLine)
         self.setPen(pen)
+        #set selectable and movable flags, along with dynamic shape
         self.setFlag(QGraphicsItem.ItemIsSelectable, True)
         self.setFlag(QGraphicsItem.ItemIsMovable, True)
         self.setFlag(QGraphicsItem.ItemSendsGeometryChanges, True)
         self.setAcceptHoverEvents(True)
         self.setCursor(QCursor(Qt.PointingHandCursor))
+        #set random radius, name and position
         self._radius = radius or 50 + random.random() * 200
         self.label = name if name else f'cir{random.choice(ascii_uppercase)}'
         self.setPos(x or random.randint(100, 1000), y or random.randint(100, 600))
+        #set properties
         self.update_rect()
         self.addItems()
         self.update_items_positions()
