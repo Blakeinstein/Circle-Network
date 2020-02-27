@@ -59,6 +59,14 @@ pip install -r requirements.txt
 ```bash
 fbs run
 ```
+
+additionally, if fbs doesnt work, you can manually run the program as
+```bash
+python3 ./src/main/python/main.py
+```
+that is run the **main.py** file located in **./src/main/python/main.py**
+any output generated when run this way would be saved in **./src/main/python/**
+
 ## API Reference
 
 The QtForPython docs were used to implement the program, one can reference them here 
